@@ -25,7 +25,10 @@ func main() {
 	client := &http.Client{}
 	for {
 		info := getInfo(sysInfo, userRepo, partitionRepo)
-		makeRequest(client, &host, &port, info)
+		err := makeRequest(client, &host, &port, info)
+		if err != nil {
+			log.Println(err)
+		}
 		fmt.Println("OK")
 		time.Sleep(time.Second * 10)
 	}
