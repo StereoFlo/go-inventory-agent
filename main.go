@@ -3,21 +3,22 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"go-agent/entity"
 	repository2 "go-agent/repository"
 	"log"
+	"net"
 	"net/http"
 	"time"
 )
 
 func main() {
-	var host string
 	var port string
-	flag.StringVar(&host, "h", "127.0.0.1", "IP of inventory app")
-	flag.StringVar(&port, "p", "8000", "Port of inventory app")
-	flag.Parse()
+	port = "8080"
+	host, err := getServerIp()
+	if err != nil {
+		panic(err)
+	}
 	partitionRepo := repository2.NewPartitionRepository()
 	userRepo := repository2.NewUserRepository()
 	sysInfo := repository2.NewSystemInfoRepository()
@@ -73,4 +74,24 @@ func makeRequest(client *http.Client, host *string, port *string, data *entity.S
 		return err
 	}
 	return nil
+}
+
+func getServerIp() (string, error) {
+	log.Println("start listening the server on 2712")
+	pc, err := net.ListenPacket("udp4", ":2712")
+	if err != nil {
+		panic(err)
+	}
+	defer pc.Close()
+
+	buf := make([]byte, 1024)
+	n, _, err := pc.ReadFrom(buf)
+	if err != nil {
+		panic(err)
+	}
+
+	r := string(buf[:n])
+	log.Println("Success! Received service ip: " + r)
+
+	return r, nil
 }
