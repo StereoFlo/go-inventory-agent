@@ -13,8 +13,6 @@ import (
 )
 
 func main() {
-	var port string
-	port = "8080"
 	host, err := getServerIp()
 	if err != nil {
 		panic(err)
@@ -25,7 +23,7 @@ func main() {
 	client := &http.Client{}
 	for {
 		info := getInfo(sysInfo, userRepo, partitionRepo)
-		err := makeRequest(client, &host, &port, info)
+		err := makeRequest(client, &host, info)
 		if err != nil {
 			log.Println(err)
 		}
@@ -70,9 +68,9 @@ func getInfo(sysInfo *repository2.SystemInfoRepository, userRepo *repository2.Us
 	return info
 }
 
-func makeRequest(client *http.Client, host *string, port *string, data *entity.SystemInfo) error {
+func makeRequest(client *http.Client, host *string, data *entity.SystemInfo) error {
 	jsonByte, _ := json.Marshal(data)
-	_, err := client.Post(fmt.Sprintf("http://%s:%s/devices", *host, *port), "application/json", bytes.NewBuffer(jsonByte))
+	_, err := client.Post(fmt.Sprintf("http://%s/devices", *host), "application/json", bytes.NewBuffer(jsonByte))
 	if err != nil {
 		return err
 	}
