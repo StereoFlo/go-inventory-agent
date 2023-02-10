@@ -78,7 +78,7 @@ func makeRequest(client *http.Client, host *string, data *entity.SystemInfo) err
 }
 
 func getServerIp() (*string, error) {
-	log.Println("start listening the server on 2712")
+	log.Println("Trying to find a server")
 	pc, err := net.ListenPacket("udp4", ":2712")
 	if err != nil {
 		return nil, err
@@ -92,7 +92,7 @@ func getServerIp() (*string, error) {
 	}
 
 	r := string(buf[:n])
-	log.Println("Success! Received service address: " + r)
+	log.Println("Success! Received server address: " + r)
 
 	return &r, nil
 }
