@@ -23,7 +23,7 @@ func main() {
 	client := &http.Client{}
 	for {
 		info := getInfo(sysInfo, userRepo, partitionRepo)
-		err := makeRequest(client, &host, info)
+		err := makeRequest(client, host, info)
 		if err != nil {
 			log.Println(err)
 		}
@@ -77,22 +77,22 @@ func makeRequest(client *http.Client, host *string, data *entity.SystemInfo) err
 	return nil
 }
 
-func getServerIp() (string, error) {
+func getServerIp() (*string, error) {
 	log.Println("start listening the server on 2712")
 	pc, err := net.ListenPacket("udp4", ":2712")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer pc.Close()
 
 	buf := make([]byte, 1024)
 	n, _, err := pc.ReadFrom(buf)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	r := string(buf[:n])
 	log.Println("Success! Received service ip: " + r)
 
-	return r, nil
+	return &r, nil
 }
