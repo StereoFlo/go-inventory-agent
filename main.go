@@ -22,8 +22,12 @@ func main() {
 	sysInfo := repository2.NewSystemInfoRepository()
 	client := &http.Client{}
 	for {
-		info := getInfo(sysInfo, userRepo, partitionRepo)
-		err := makeRequest(client, host, info)
+		info, err := getInfo(sysInfo, userRepo, partitionRepo)
+		err = makeRequest(client, host, info)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = makeRequest(client, host, info)
 		if err != nil {
 			log.Println(err)
 		}
@@ -33,26 +37,26 @@ func main() {
 
 }
 
-func getInfo(sysInfo *repository2.SystemInfoRepository, userRepo *repository2.UserRepository, partitionRepo *repository2.PartitionRepository) *entity.SystemInfo {
+func getInfo(sysInfo *repository2.SystemInfoRepository, userRepo *repository2.UserRepository, partitionRepo *repository2.PartitionRepository) (*entity.SystemInfo, error) {
 	hostStat, err := sysInfo.GetHost()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	cpuName, err := sysInfo.GetCpuName()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	osName, err := sysInfo.GetOsName()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	ram, err := sysInfo.GetRam()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	ip, err := sysInfo.GetIp()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	partitions, err := partitionRepo.GetPartitions()
 	muser, err := userRepo.GetUser()
@@ -65,7 +69,7 @@ func getInfo(sysInfo *repository2.SystemInfoRepository, userRepo *repository2.Us
 	info.Partitions = partitions
 	info.IP = *ip
 
-	return info
+	return info, nil
 }
 
 func makeRequest(client *http.Client, host *string, data *entity.SystemInfo) error {
