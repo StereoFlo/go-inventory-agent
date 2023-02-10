@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	host, err := infrastructure.GetServerAddress()
+	address, err := infrastructure.GetServerAddress()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,7 +19,7 @@ func main() {
 	client := &http.Client{}
 	for {
 		info, err := infrastructure.GetInfo(sysInfo, userRepo, partitionRepo)
-		_, err = infrastructure.MakeRequest(client, host, info)
+		_, err = infrastructure.MakeRequest(client, address, info)
 		if err != nil {
 			log.Println(err)
 		}
