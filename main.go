@@ -92,7 +92,7 @@ func getServerIp() (*string, error) {
 	}
 
 	r := string(buf[:n])
-	log.Println("Success! Received service ip: " + r)
+	log.Println("Success! Received service address: " + r)
 
 	return &r, nil
 }
