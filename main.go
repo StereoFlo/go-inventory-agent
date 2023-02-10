@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go-agent/infrastructure"
 	"go-agent/repository"
 	"log"
@@ -24,7 +23,7 @@ func main() {
 		if err != nil {
 			log.Println(err)
 		}
-		fmt.Println("OK")
+		log.Println("OK")
 		time.Sleep(time.Second * 10)
 	}
 
