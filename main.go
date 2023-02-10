@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	host, err := getServerIp()
+	host, err := getServerAddress()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	partitionRepo := repository2.NewPartitionRepository()
 	userRepo := repository2.NewUserRepository()
@@ -36,23 +36,23 @@ func main() {
 func getInfo(sysInfo *repository2.SystemInfoRepository, userRepo *repository2.UserRepository, partitionRepo *repository2.PartitionRepository) *entity.SystemInfo {
 	hostStat, err := sysInfo.GetHost()
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err)
 	}
 	cpuName, err := sysInfo.GetCpuName()
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err)
 	}
 	osName, err := sysInfo.GetOsName()
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err)
 	}
 	ram, err := sysInfo.GetRam()
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err)
 	}
 	ip, err := sysInfo.GetIp()
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err)
 	}
 	partitions, err := partitionRepo.GetPartitions()
 	muser, err := userRepo.GetUser()
@@ -77,7 +77,7 @@ func makeRequest(client *http.Client, host *string, data *entity.SystemInfo) err
 	return nil
 }
 
-func getServerIp() (*string, error) {
+func getServerAddress() (*string, error) {
 	log.Println("Trying to find a server")
 	pc, err := net.ListenPacket("udp4", ":2712")
 	if err != nil {
