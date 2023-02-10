@@ -46,8 +46,11 @@ func GetServerAddress() (*string, error) {
 	return &r, nil
 }
 
-func GetInfo(sysInfo *repository.SystemInfoRepository, userRepo *repository.UserRepository, partitionRepo *repository.PartitionRepository) (*entity.SystemInfo, error) {
-	hostStat, err := sysInfo.GetHost()
+func GetInfo(
+	sysInfo *repository.SystemInfoRepository,
+	userRepo *repository.UserRepository,
+	partitionRepo *repository.PartitionRepository) (*entity.SystemInfo, error) {
+	host, err := sysInfo.GetHost()
 	if err != nil {
 		return nil, err
 	}
@@ -68,10 +71,10 @@ func GetInfo(sysInfo *repository.SystemInfoRepository, userRepo *repository.User
 		return nil, err
 	}
 	partitions, err := partitionRepo.GetPartitions()
-	muser, err := userRepo.GetUser()
+	osUser, err := userRepo.GetUser()
 	info := new(entity.SystemInfo)
-	info.User = muser
-	info.Hostname = *hostStat
+	info.User = osUser
+	info.Hostname = *host
 	info.Platform = *osName
 	info.CPU = *cpuName
 	info.RAM = *ram
