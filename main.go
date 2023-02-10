@@ -19,7 +19,7 @@ func main() {
 	client := &http.Client{}
 	for {
 		info, err := infrastructure.GetInfo(sysInfo, userRepo, partitionRepo)
-		err = infrastructure.MakeRequest(client, host, info)
+		_, err = infrastructure.MakeRequest(client, host, info)
 		if err != nil {
 			log.Println(err)
 		}
